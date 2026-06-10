@@ -24,6 +24,19 @@ export const SCHEDULE_ACTIONS = {
   TEMPLATE_DELETE: 'schedule-template-delete',
 } as const;
 
+export const MENU_ACTION_COMMANDS: Record<string, string[]> = {
+  login: ['login'],
+  register: ['register'],
+  'schedule-publish': ['schedule', 'publish'],
+  'schedule-template-save': ['schedule', 'template-save'],
+  'schedule-template-list': ['schedule', 'template-list'],
+  'schedule-template-delete': ['schedule', 'template-delete'],
+  booking: ['booking'],
+  order: ['order'],
+  stats: ['stats'],
+  profile: ['profile'],
+};
+
 export const SCHEDULE_MESSAGES = {
   DUPLICATE_WARNING: '以下日期的时段与已有档期冲突：',
   PUBLISH_SUCCESS: '档期已发布。',
