@@ -6,7 +6,7 @@ import { registerBookingCommand } from './commands/booking.js';
 import { registerOrderCommand } from './commands/order.js';
 import { registerStatsCommand } from './commands/stats.js';
 import { registerProfileCommand } from './commands/profile.js';
-import { chooseMainAction } from './prompts/menu.js';
+import { chooseMainAction, chooseTemplateAction } from './prompts/menu.js';
 
 const program = new Command();
 program.name('photo-cli').description('摄影约拍平台 CLI 发布工具').version('1.0.0');
@@ -18,8 +18,11 @@ registerStatsCommand(program);
 registerProfileCommand(program);
 
 program.action(async () => {
-  const action = await chooseMainAction();
-  await program.parseAsync(['node', 'photo-cli', action], { from: 'user' });
+  let action = await chooseMainAction();
+  if (action === 'schedule-template') {
+    action = await chooseTemplateAction();
+  }
+  await program.parseAsync(['node', 'photo-cli', ...action.split('-')], { from: 'user' });
 });
 
 await program.parseAsync(process.argv);

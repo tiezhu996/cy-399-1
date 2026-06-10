@@ -1,4 +1,5 @@
 import { apiClient } from './client.js';
+import { SchedulePayload, ScheduleRecord } from '../types/domain.js';
 
 export const photoApi = {
   async login(username: string, password: string) {
@@ -9,8 +10,12 @@ export const photoApi = {
     const { data } = await apiClient().post('/api/auth/register', { username, password });
     return data;
   },
-  async createSchedules(payload: unknown) {
+  async createSchedules(payload: SchedulePayload) {
     const { data } = await apiClient().post('/api/schedules/batch', payload);
+    return data;
+  },
+  async listSchedules(): Promise<ScheduleRecord[]> {
+    const { data } = await apiClient().get('/api/schedules');
     return data;
   },
   async listBookings() {
