@@ -6,6 +6,9 @@
 
 - 摄影师注册、登录，本地持久化 Token 到 `~/.photo-cli/config.json`。
 - 批量发布可约日期、时段、拍摄类型、价格和服务城市。
+- 档期模板管理：保存常用档期配置为模板，发布时一键选用，避免重复填写。
+- 发布档期时自动检测同天同时段的已有档期并给出冲突提示。
+- 手动填写发布后可一键保存为模板。
 - 查看待确认预约请求并确认或拒绝。
 - 按状态筛选订单并标记完成。
 - 月度/年度收入表格统计，按拍摄类型分类汇总。
@@ -26,7 +29,10 @@ npm link
 ```bash
 photo-cli login
 photo-cli register
-photo-cli schedule
+photo-cli schedule publish
+photo-cli schedule template-save
+photo-cli schedule template-list
+photo-cli schedule template-delete
 photo-cli booking
 photo-cli order --status confirmed
 photo-cli stats --year 2026
@@ -64,7 +70,19 @@ cli
 默认 API 地址为 `http://localhost:3000`，可在 `~/.photo-cli/config.json` 中保存：
 
 ```json
-{"apiBaseUrl":"http://localhost:3000","token":"your-token"}
+{
+  "apiBaseUrl": "http://localhost:3000",
+  "token": "your-token",
+  "scheduleTemplates": [
+    {
+      "name": "周末人像",
+      "slot": "morning",
+      "shootType": "portrait",
+      "price": 800,
+      "city": "北京"
+    }
+  ]
+}
 ```
 
 ## License

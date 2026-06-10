@@ -19,10 +19,9 @@ export const TIME_SLOT_LABELS: Record<string, string> = {
 
 export const SCHEDULE_ACTIONS = {
   PUBLISH: 'schedule-publish',
-  PUBLISH_FROM_TEMPLATE: 'schedule-publish-template',
-  SAVE_TEMPLATE: 'schedule-save-template',
-  LIST_TEMPLATES: 'schedule-list-templates',
-  DELETE_TEMPLATE: 'schedule-delete-template',
+  TEMPLATE_SAVE: 'schedule-template-save',
+  TEMPLATE_LIST: 'schedule-template-list',
+  TEMPLATE_DELETE: 'schedule-template-delete',
 } as const;
 
 export const SCHEDULE_MESSAGES = {
