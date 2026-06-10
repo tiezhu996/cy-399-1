@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { homedir } from 'node:os';
-import { AppConfig, ScheduleTemplate, ScheduleRecord } from '../types/domain.js';
+import { AppConfig, ScheduleTemplate, ScheduleRecord, TimeSlot } from '../types/domain.js';
 
 const configPath = join(homedir(), '.photo-cli', 'config.json');
 const defaultConfig: AppConfig = { apiBaseUrl: 'http://localhost:3000' };
@@ -40,6 +40,6 @@ export function deleteTemplate(name: string): boolean {
   return true;
 }
 
-export function findConflicts(dates: string[], slot: string, existing: ScheduleRecord[]): string[] {
+export function findConflicts(dates: string[], slot: TimeSlot, existing: ScheduleRecord[]): string[] {
   return dates.filter((date) => existing.some((r) => r.date === date && r.slot === slot));
 }

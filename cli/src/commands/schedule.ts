@@ -13,11 +13,27 @@ import { photoApi } from '../api/photoApi.js';
 import { loadTemplates, saveTemplate, deleteTemplate, findConflicts } from '../utils/config.js';
 import { printApiError } from '../utils/errors.js';
 
+type SchedulePromptAnswers = {
+  dates: string;
+  slot: TimeSlot;
+  shootType: ShootType;
+  price: number;
+  city: string;
+};
+
+type TemplatePromptAnswers = {
+  name: string;
+  slot: TimeSlot;
+  shootType: ShootType;
+  price: number;
+  city: string;
+};
+
 async function promptScheduleFields(
-  defaults?: Partial<ScheduleTemplate>,
-): Promise<{ dates: string; slot: TimeSlot; shootType: ShootType; price: number; city: string }> {
-  return inquirer.prompt([
-    { type: 'input', name: 'dates', message: '可约日期，逗号分隔，例如 2026-06-10,2026-06-11', default: defaults?.dates },
+  defaults?: Pick<ScheduleTemplate, 'slot' | 'shootType' | 'price' | 'city'>,
+): Promise<SchedulePromptAnswers> {
+  return inquirer.prompt<SchedulePromptAnswers>([
+    { type: 'input', name: 'dates', message: '可约日期，逗号分隔，例如 2026-06-10,2026-06-11' },
     { type: 'list', name: 'slot', message: '时段', choices: TIME_SLOTS, default: defaults?.slot },
     { type: 'list', name: 'shootType', message: '拍摄类型', choices: SHOOT_TYPES, default: defaults?.shootType },
     { type: 'number', name: 'price', message: '价格', default: defaults?.price },
@@ -50,14 +66,14 @@ async function handlePublish(): Promise<void> {
     await handleManualPublish();
     return;
   }
-  const { mode } = await inquirer.prompt<{ mode: string }>([
+  const { mode } = await inquirer.prompt<{ mode: 'template' | 'manual' }>([
     {
       type: 'list',
       name: 'mode',
       message: '选择发布方式',
       choices: [
-        { name: '从模板选用', value: 'template' },
-        { name: '手动填写', value: 'manual' },
+        { name: '从模板选用', value: 'template' as const },
+        { name: '手动填写', value: 'manual' as const },
       ],
     },
   ]);
@@ -97,7 +113,7 @@ async function handleTemplatePublish(templates: ScheduleTemplate[]): Promise<voi
       },
     ]);
     const tpl = templates.find((t) => t.name === templateName)!;
-    const answer = await promptScheduleFields(tpl);
+    const answer = await promptScheduleFields({ slot: tpl.slot, shootType: tpl.shootType, price: tpl.price, city: tpl.city });
     const dates = String(answer.dates).split(',').map((item) => item.trim());
     const payload: SchedulePayload = { dates, slot: answer.slot, shootType: answer.shootType, price: answer.price, city: answer.city };
     await checkAndPublish(payload);
@@ -108,7 +124,7 @@ async function handleTemplatePublish(templates: ScheduleTemplate[]): Promise<voi
 
 async function handleSaveTemplate(partial?: Partial<ScheduleTemplate>): Promise<void> {
   try {
-    const answer = await inquirer.prompt([
+    const answer = await inquirer.prompt<TemplatePromptAnswers>([
       { type: 'input', name: 'name', message: '模板名称' },
       { type: 'list', name: 'slot', message: '时段', choices: TIME_SLOTS, default: partial?.slot },
       { type: 'list', name: 'shootType', message: '拍摄类型', choices: SHOOT_TYPES, default: partial?.shootType },
